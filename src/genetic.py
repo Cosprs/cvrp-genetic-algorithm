@@ -6,9 +6,9 @@ import time
 
 import utilities
 
-cities = 100
+points = 100
 capacity = 10
-sample = 50
+individuals = 50
 replace = 25
 generations = 500
 
@@ -19,8 +19,8 @@ class Environment:
 		self.capacity = capacity
 		self.distances = distances
 		self.individuals = []
-		self.replace = min(sample, math.floor(replace / 2))
-		for i in range(sample):
+		self.replace = min(individuals, math.floor(replace / 2))
+		for i in range(individuals):
 			path = []
 			points = list(range(1, self.quantity))
 			while len(points) != 0:
@@ -130,7 +130,7 @@ class Individual:
 					return
 
 
-coordinates = utilities.get_coordinates(cities, -1000, 1000)
+coordinates = utilities.get_coordinates(points, -1000, 1000)
 
 t1 = time.time_ns()
 
@@ -138,7 +138,5 @@ environment = Environment(utilities.coordinates_to_distances(coordinates), capac
 
 t2 = time.time_ns()
 
-print('Best :' + str(environment.individuals[0].evaluate()))
-finaltime = (t2 - t1) / 1000000000
-print('Time: ' + str(round(finaltime,3)))
-
+print('Best: ' + str(round(environment.individuals[0].evaluate(), 3)))
+print('Time: ' + str(round((t2 - t1) / 1000000000, 3)))
