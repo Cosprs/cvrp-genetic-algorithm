@@ -45,7 +45,7 @@
         },
         watch: {
             data: {
-                handler: function (d) {
+                handler: function () {
                     this.$data._chart.destroy();
 
                     this.renderChart(
