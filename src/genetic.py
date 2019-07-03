@@ -139,4 +139,6 @@ environment = Environment(utilities.coordinates_to_distances(coordinates), capac
 t2 = time.time_ns()
 
 print('Best :' + str(environment.individuals[0].evaluate()))
-print('Time: ' + str((t2 - t1) / 1000000000))
+finaltime = (t2 - t1) / 1000000000
+print('Time: ' + str(round(finaltime,3)))
+
