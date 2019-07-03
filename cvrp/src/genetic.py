@@ -56,6 +56,7 @@ class Individual:
         self.score = None
         self.muted = True
 
+
     def evaluate(self):
         if self.muted:
             self.score = 0
@@ -69,6 +70,7 @@ class Individual:
             self.muted = False
         return self.score
 
+
     def mutate(self):
         self.muted = True
         j = random.randint(0, self.environment.quantity - 2)
@@ -81,6 +83,16 @@ class Individual:
         if random.randint(0, 8) == 0:
             self.append(i, j)
             self.pop(i, j)
+        elif random.randint(0, 8) < 3:
+            i = random.randint(0, len(self.path) - 1)
+            m = random.randint(0, len(self.path) - 2)
+            if i <= m:
+                m += 1
+            qj = random.randint(1, len(self.path[i]))
+            j = random.randint(0, len(self.path[i]) - qj)
+            qn = random.randint(max(1, len(self.path[m]) - self.environment.capacity + qj), min(len(self.path[m]), self.environment.capacity - len(self.path[i]) + qj))
+            n = random.randint(0, len(self.path[m]) - qn)
+            self.swap2(i, j, qj, m, n, qn)
         else:
             m = random.randint(0, len(self.path) - 1)
             n = random.randint(0, self.environment.capacity - 1)
@@ -95,6 +107,7 @@ class Individual:
                     n = random.randint(0, len(self.path[m]) - 1)
                     self.swap(i, j, m, n)
 
+
     def inject(self, other):
         self.muted = True
         m = random.randint(0, len(other.path) - 1)
@@ -102,19 +115,39 @@ class Individual:
             self.remove(value)
         self.path.append(copy.deepcopy(other.path[m]))
 
+
     def append(self, i, j):
         self.path.append([self.path[i][j]])
+
 
     def pop(self, i, j):
         del self.path[i][j]
         if len(self.path[i]) == 0:
             del self.path[i]
 
+
     def insert(self, i, j, m, n):
         self.path[m].insert(n, self.path[i][j])
 
+
     def swap(self, i, j, m, n):
         self.path[m][n], self.path[i][j] = self.path[i][j], self.path[m][n]
+
+
+    def swap2(self, i, j, qj, m, n, qn):
+        tour1 = []
+        tour2 = []
+        for q in range(qj):
+            tour1.append(self.path[i][j])
+            del self.path[i][j]
+        for q in range(qn):
+            tour2.append(self.path[m][n])
+            del self.path[m][n]
+        for q in range(qj):
+            self.path[m].insert(n + q, tour1[q])
+        for q in range(qn):
+            self.path[i].insert(j + q, tour2[q])
+
 
     def remove(self, value):
         for i, tour in enumerate(self.path):
@@ -138,7 +171,8 @@ def cli(points=100,
 
     t2 = time.time_ns()
 
-    print('Best: ' + str(round(environment.individuals[0].evaluate(), 3)))
+    print('Score: ' + str(round(environment.individuals[0].evaluate(), 3)))
+    print('Path: ' + str(environment.individuals[0].path))
     print('Time: ' + str(round((t2 - t1) / 1000000000, 3)))
 
 
