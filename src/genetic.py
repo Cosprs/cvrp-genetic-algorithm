@@ -8,7 +8,7 @@ import utilities
 cities = 100
 capacity = 10
 sample = 50
-replace = 5
+replace = 25
 generations = 500
 
 class Environment:
@@ -44,6 +44,7 @@ class Environment:
 				del self.individuals[len(self.individuals) - i - 1]
 			for i in range(0, self.replace):
 				self.individuals.append(Individual(self, copy.deepcopy(self.individuals[i].path)))
+
 
 class Individual:
 
@@ -95,6 +96,14 @@ class Individual:
 					self.swap(i, j, m, n)
 
 
+	def inject(self, other):
+		self.muted = True
+		m = random.randint(0, len(other.path) - 1)
+		for value in other.path[m]:
+			self.remove(value)
+		self.path.append(copy.deepcopy(other.path[m]))
+
+
 	def append(self, i, j):
 		self.path.append([self.path[i][j]])
 
@@ -111,6 +120,14 @@ class Individual:
 
 	def swap(self, i, j, m, n):
 		self.path[m][n], self.path[i][j] = self.path[i][j], self.path[m][n]
+
+
+	def remove(self, value):
+		for i, tour in enumerate(self.path):
+			for j, point in enumerate(tour):
+				if point == value:
+					self.pop(i, j)
+					return
 
 
 coordinates = utilities.get_coordinates(cities, -1000, 1000)
