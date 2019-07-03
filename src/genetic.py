@@ -2,6 +2,7 @@ import functools
 import copy
 import math
 import random
+import time
 
 import utilities
 
@@ -37,7 +38,6 @@ class Environment:
 				a = new.evaluate()
 				b = old.evaluate()
 				if (a < b):
-					print('Generation: ' + str(j) + ' Individual: ' + str(i) + ' Improvement: ' + str(b) + ' -> ' + str(a))
 					self.individuals[i] = new
 			self.individuals = sorted(self.individuals, key = lambda individual: individual.evaluate())
 			for i in range(0, self.replace):
@@ -132,15 +132,11 @@ class Individual:
 
 coordinates = utilities.get_coordinates(cities, -1000, 1000)
 
+t1 = time.time_ns()
+
 environment = Environment(utilities.coordinates_to_distances(coordinates), capacity)
 
-environment.individuals = sorted(environment.individuals, key = lambda individual: individual.evaluate())
+t2 = time.time_ns()
 
-total = 0
-
-for i, individual in enumerate(environment.individuals):
-	score = individual.evaluate()
-	total += score
-	print(str(i) + ': ' + str(score))
-
-print('Average: ' + str(total / len(environment.individuals)))
+print('Best :' + str(environment.individuals[0].evaluate()))
+print('Time: ' + str((t2 - t1) / 1000000000))
