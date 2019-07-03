@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <h1 class="title">Web Joul</h1>
     <router-view/>
   </div>
 </template>
@@ -11,6 +12,10 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  height: 80vh;
+  max-height: 80vh;
 }
+  h1 {
+    margin-top: 25px!important;
+  }
 </style>

@@ -1,18 +1,44 @@
 <template>
-    <div>
-        <button @click="run">RUN</button>
-        <div id="result">
-            <result-chart :datasets="datasets"></result-chart>
+    <div class="level tile is-ancestor">
+        <div class="tile is-12 is-parent">
+            <section class="section level-item level-left tile is-parent">
+                <div class="tile is-child box" id="controls">
+                    <b-field label="Points" class="center-div">
+                        <b-numberinput v-model="points" min="1" controls-position="compact"></b-numberinput>
+                    </b-field>
+                    <b-field label="Capacity" class="center-div">
+                        <b-numberinput v-model="capacity" min="1" controls-position="compact"></b-numberinput>
+                    </b-field>
+                    <b-field label="Individuals" class="center-div">
+                        <b-numberinput v-model="individuals" min="1" controls-position="compact"></b-numberinput>
+                    </b-field>
+                    <b-field label="Replace" class="center-div">
+                        <b-numberinput v-model="replace" min="0" controls-position="compact"></b-numberinput>
+                    </b-field>
+                    <b-field label="Generations" class="center-div">
+                        <b-numberinput v-model="generations" min="1" controls-position="compact"></b-numberinput>
+                    </b-field>
+                    <b-button @click="run" :loading="running" type="is-primary">RUN</b-button>
+                </div>
+            </section>
+            <section class="section level-item level-right tile is-parent">
+                <div class="tile is-child box" id="resultcontainer">
+                    <div id="result">
+                        <result-chart :datasets="datasets"></result-chart>
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
 </template>
 
 <script>
     import ResultChart from "./ResultChart";
+    import BButton from "buefy/src/components/button/Button";
 
     export default {
         name: 'VueDemo',
-        components: {ResultChart},
+        components: {BButton, ResultChart},
         props: {},
         data() {
             return {
@@ -28,7 +54,13 @@
                     '#2466FF',
                     '#EBE91E',
                     '#0FFF96'
-                ]
+                ],
+                running: false,
+                points: 100,
+                capacity: 10,
+                individuals: 50,
+                replace: 25,
+                generations: 500,
             }
         },
         methods: {
@@ -41,7 +73,21 @@
                 return color;
             },
             async run() {
-                const res = await fetch('http://localhost:8000/genetic/');
+                if (this.running) return;
+
+                this.running = true;
+
+                const url = new URL("http://localhost:8000/genetic");
+                const params = {
+                  capacity: this.capacity,
+                  points: this.points,
+                  individuals: this.individuals,
+                  replace: this.replace,
+                  generations: this.generations
+                };
+                Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+
+                const res = await fetch(url);
                 const json = await res.json();
 
                 const datasets = [];
@@ -97,6 +143,7 @@
                     i += 1;
                 }
                 this.datasets = datasets;
+                this.running = false;
             }
         },
         created() {
@@ -106,8 +153,27 @@
 </script>
 
 <style scoped>
+    #resultcontainer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     #result {
         width: 500px;
         height: 500px;
+    }
+
+    #controls {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .center-div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 </style>
