@@ -1,5 +1,6 @@
 import functools
 import copy
+import math
 import random
 
 import utilities
@@ -7,6 +8,7 @@ import utilities
 cities = 100
 capacity = 10
 sample = 50
+replace = 5
 generations = 500
 
 class Environment:
@@ -16,6 +18,7 @@ class Environment:
 		self.capacity = capacity
 		self.distances = distances
 		self.individuals = []
+		self.replace = min(sample, math.floor(replace / 2))
 		for i in range(sample):
 			path = []
 			points = list(range(1, self.quantity))
@@ -27,15 +30,20 @@ class Environment:
 					del points[j]
 				path.append(tour)
 			self.individuals.append(Individual(self, path))
-		for i in range(generations):
-			for j, old in enumerate(self.individuals):
+		for j in range(generations):
+			for i, old in enumerate(self.individuals):
 				new = Individual(self, copy.deepcopy(old.path))
 				new.mutate()
 				a = new.evaluate()
 				b = old.evaluate()
 				if (a < b):
-					print('Generation: ' + str(i) + ' Individual: ' + str(j) + ' Improvement: ' + str(b) + ' -> ' + str(a))
-					self.individuals[j] = new
+					print('Generation: ' + str(j) + ' Individual: ' + str(i) + ' Improvement: ' + str(b) + ' -> ' + str(a))
+					self.individuals[i] = new
+			self.individuals = sorted(self.individuals, key = lambda individual: individual.evaluate())
+			for i in range(0, self.replace):
+				del self.individuals[len(self.individuals) - i - 1]
+			for i in range(0, self.replace):
+				self.individuals.append(Individual(self, copy.deepcopy(self.individuals[i].path)))
 
 class Individual:
 
@@ -109,7 +117,7 @@ coordinates = utilities.get_coordinates(cities, -1000, 1000)
 
 environment = Environment(utilities.coordinates_to_distances(coordinates), capacity)
 
-environment.individuals = sorted(environment.individuals, key=lambda individual: individual.evaluate())
+environment.individuals = sorted(environment.individuals, key = lambda individual: individual.evaluate())
 
 total = 0
 
