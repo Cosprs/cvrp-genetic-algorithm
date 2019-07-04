@@ -5,7 +5,7 @@ import math
 import random
 import time
 
-from .utilities import get_coordinates, coordinates_to_distances
+from utilities import get_coordinates, coordinates_to_distances
 
 
 # The environment is our algorithm
