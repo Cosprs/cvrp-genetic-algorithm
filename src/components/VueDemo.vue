@@ -79,11 +79,11 @@
 
                 const url = new URL("http://localhost:8000/genetic");
                 const params = {
-                  capacity: this.capacity,
-                  points: this.points,
-                  individuals: this.individuals,
-                  replace: this.replace,
-                  generations: this.generations
+                    capacity: this.capacity,
+                    points: this.points,
+                    individuals: this.individuals,
+                    replace: this.replace,
+                    generations: this.generations
                 };
                 Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
 
@@ -98,12 +98,12 @@
                         x: json.coordinates[0][0],
                         y: json.coordinates[0][1],
                     }],
-                    borderColor: 'black',
+                    borderColor: '#aeaeae',
                     borderWidth: 1,
-                    pointBackgroundColor: 'black',
+                    pointBackgroundColor: '#000',
                     pointBorderColor: '#000',
-                    pointRadius: 5,
-                    pointHoverRadius: 5,
+                    pointRadius: 8,
+                    pointHoverRadius: 8,
                     fill: false,
                     tension: 0,
                     showLine: true
